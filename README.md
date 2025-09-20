@@ -1,2 +1,14 @@
 # CodeVista--hack-with-hyderabad-microsoft-
-CodeVista presents INNOGRID – a next-generation event management platform built to simplify hackathons and bridge the gap between organizers, participants, and sponsors. Designed with modern UI/UX, role-based dashboards, and scalable architecture, INNOGRID streamlines event planning, enhances participant , organizers and sponserships 
+InoBudget is a lightweight and intuitive personal finance tracking application designed to help individuals manage their expenses, savings, and budgets with ease. It provides clear insights into spending habits and helps users stay financially organized.
+
+🔑 Key Features
+
+💰 Expense Tracking – Log daily expenses and categorize them.
+
+📊 Budget Management – Set monthly/weekly budgets and monitor usage.
+
+📈 Analytics Dashboard – Visualize spending trends with charts & graphs.
+
+🔔 Smart Alerts – Get notified when nearing budget limits.
+
+☁️ Cloud Support – Access your financial data anytime, anywhere.
