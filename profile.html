@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>InnoGrid — Profile</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: url(profilebg.jpeg);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="logo" style="color: #6667ad;">INNOBUDGET</div>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="wishlist.html">Wishlist</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="profile.html" class="active">Profile</a>
+      </nav>
+      <div class="roles">
+        <a href="loginsignup.html" class="role-btn" id="auth-link">Login / Signup</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="profile-info">
+      <h1 id="user-greeting">Welcome, User!</h1>
+      <p id="user-role-text"></p>
+      <div id="organiser-code-display" style="display: none;">
+        <p>Your registration code for new events:</p>
+        <div class="registration-code-display" id="user-code"></div>
+      </div>
+      <button id="logout-btn" class="btn" style="margin-top:20px; background-color: #6667ab;">Logout</button>
+    </section>
+
+    <section>
+      <form class="profile-form" id="profile-form">
+        <h2>Edit Profile</h2>
+        <label for="username">Name</label>
+        <input type="text" id="username" required />
+        <label for="mobile">Mobile</label>
+        <input type="tel" id="mobile" required pattern="[0-9]{10}" placeholder="10-digit mobile number" />
+        <label for="email">Email</label>
+        <input type="email" id="email" required disabled />
+        <label for="role">Role</label>
+        <select id="role" required>
+          <option value="participant">Participant</option>
+          <option value="organiser">Organiser</option>
+          <option value="sponsor">Sponsor</option>
+        </select>
+        <button type="submit">Save Profile</button>
+        <div class="error" id="form-error"></div>
+      </form>
+    </section>
+
+    <section class="achievements-box">
+      <h2>
+        <button id="toggle-achievements">▶ Show Achievements</button>
+      </h2>
+      <div id="achievements" style="display:none;">
+        <div id="badge-list"></div>
+        <div class="points">Points: <span id="points">0</span></div>
+      </div>
+    </section>
+
+    <section class="profile-events">
+      <h2 id="events-title">Your Events</h2>
+      <div id="eventsGrid" class="events-grid">
+        <div class="small" style="text-align:center;">You have not registered for any events yet.</div>
+      </div>
+    </section>
+  </main>
+  <script src="events_data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const loggedInUserEmail = localStorage.getItem('loggedInUser');
+      if (!loggedInUserEmail) {
+        window.location.href = 'loginsignup.html';
+        return;
+      }
+      
+      // Ensure registeredEvents exists
+      if (!localStorage.getItem('registeredEvents')) {
+        localStorage.setItem('registeredEvents', '[]');
+      }
+
+      const registeredEvents = JSON.parse(localStorage.getItem('registeredEvents'));
+      const userRegistrations = registeredEvents.filter(reg => reg.email === loggedInUserEmail);
+      const storedUser = JSON.parse(localStorage.getItem(loggedInUserEmail));
+
+      const userGreeting = document.getElementById('user-greeting');
+      const userRoleText = document.getElementById('user-role-text');
+      const eventsTitle = document.getElementById('events-title');
+      const eventsGrid = document.getElementById('eventsGrid');
+      const logoutBtn = document.getElementById('logout-btn');
+
+      userGreeting.innerText = `Welcome, ${storedUser.username || loggedInUserEmail.split('@')[0]}!`;
+      userRoleText.innerText = `Your role: ${storedUser.role.charAt(0).toUpperCase() + storedUser.role.slice(1)}`;
+
+      // Fill profile form
+      document.getElementById('username').value = storedUser.username || '';
+      document.getElementById('mobile').value = storedUser.mobile || '';
+      document.getElementById('email').value = loggedInUserEmail;
+      document.getElementById('role').value = storedUser.role;
+
+      if (storedUser.role === 'organiser') {
+        document.getElementById('organiser-code-display').style.display = 'block';
+        document.getElementById('user-code').innerText = storedUser.registrationCode;
+      }
+
+      let titleText = '';
+      switch (storedUser.role) {
+        case 'participant':
+          titleText = 'Your Participated Events';
+          break;
+        case 'organiser':
+          titleText = 'Your Conducted Events';
+          break;
+        case 'sponsor':
+          titleText = 'Your Sponsored Events';
+          break;
+        default:
+          titleText = 'Your Events';
+      }
+      eventsTitle.innerText = titleText;
+
+      if (userRegistrations.length === 0) {
+        eventsGrid.innerHTML = '<div class="small" style="text-align:center;">You have not registered for any events yet.</div>';
+      } else {
+        eventsGrid.innerHTML = '';
+        userRegistrations.forEach(reg => {
+          const event = EVENTS.find(e => e.id == reg.eventId);
+          if (event) {
+            const card = document.createElement('div');
+            card.className = 'event-card';
+            const paidLabel = event.price === 0 ? 'Free' : '₹' + event.price.toLocaleString('en-IN');
+            const onlineStatusBadge = `<span class="${event.isOnline ? 'online-badge' : 'offline-badge'}">${event.isOnline ? 'Online' : 'Offline'}</span>`;
+
+            card.innerHTML = `
+              <div>
+                <div class="meta">
+                  <div class="type-badge">${event.type}</div>
+                  <div class="price">${paidLabel}</div>
+                </div>
+                <div class="event-title">${event.title}</div>
+                <div class="event-details">
+                  <div>${onlineStatusBadge}</div>
+                  <div>${new Date(event.date).toLocaleString('en-IN', {
+                    dateStyle: 'medium',
+                    timeStyle: 'short'
+                  })}</div>
+                  <div style="margin-top:6px">${event.city}</div>
+                </div>
+              </div>
+              <div class="small" style="margin-top:12px">Registered as: ${reg.role}</div>
+            `;
+            eventsGrid.appendChild(card);
+          }
+        });
+      }
+
+      // Logout
+      logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('loggedInUser');
+        window.location.href = 'loginsignup.html';
+      });
+
+      // Save Profile
+      const profileForm = document.getElementById('profile-form');
+      const errorBox = document.getElementById('form-error');
+      profileForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('username').value.trim();
+        const mobile = document.getElementById('mobile').value.trim();
+        const role = document.getElementById('role').value;
+
+        if (!username) {
+          errorBox.textContent = "Name cannot be empty.";
+          return;
+        }
+        if (!/^[0-9]{10}$/.test(mobile)) {
+          errorBox.textContent = "Enter a valid 10-digit mobile number.";
+          return;
+        }
+
+        storedUser.username = username;
+        storedUser.mobile = mobile;
+        storedUser.role = role;
+
+        localStorage.setItem(loggedInUserEmail, JSON.stringify(storedUser));
+        errorBox.textContent = "Profile updated successfully!";
+        errorBox.style.color = "green";
+        setTimeout(() => location.reload(), 1000);
+      });
+
+      // Achievements
+      const pointsEl = document.getElementById('points');
+      const badgeList = document.getElementById('badge-list');
+      let points = userRegistrations.length * 50;
+      pointsEl.innerText = points;
+
+      badgeList.innerHTML = "";
+      if (points >= 50) badgeList.innerHTML += "<span class='badge'>Rookie</span>";
+      if (points >= 150) badgeList.innerHTML += "<span class='badge'>Achiever</span>";
+      if (points >= 300) badgeList.innerHTML += "<span class='badge'>Pro</span>";
+      if (points >= 500) badgeList.innerHTML += "<span class='badge'>Legend</span>";
+
+      const toggleBtn = document.getElementById('toggle-achievements');
+      const achievements = document.getElementById('achievements');
+      let isVisible = false;
+
+      toggleBtn.addEventListener('click', () => {
+        isVisible = !isVisible;
+        achievements.style.display = isVisible ? 'block' : 'none';
+        toggleBtn.innerText = isVisible ? '▼ Hide Achievements' : '▶ Show Achievements';
+      });
+    });
+
+    // Auth link
+    const authLink = document.getElementById('auth-link');
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser) {
+      const username = loggedInUser.split('@')[0];
+      authLink.innerText = username;
+      authLink.href = 'profile.html';
+    }
+  </script>
+</body>
+</html>

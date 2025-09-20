@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>InnoGrid — Wishlist</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: url(wishlistbg.jpeg);
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="logo" style="color: #6667ad;">INNOBUDGET</div>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="wishlist.html">Wishlist</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="profile.html">Profile</a>
+      </nav>
+
+      <div class="roles">
+        <a href="loginsignup.html" class="role-btn" id="auth-link">Login / Signup</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container wishlist-wrapper">
+    <h2>Your Wishlisted Events</h2>
+    <div id="wishlist-grid" class="events-grid">
+      </div>
+  </main>
+
+  <footer class="container small" style="padding:24px 0;">
+    © 2025 InnoGrid
+  </footer>
+
+  <script src="events_data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const wishlistGrid = document.getElementById('wishlist-grid');
+      const wishlistIds = JSON.parse(localStorage.getItem('wishlist')) || [];
+      const wishlistedEvents = EVENTS.filter(event => wishlistIds.includes(event.id));
+
+      function formatDate(iso) {
+        const d = new Date(iso);
+        return d.toLocaleString('en-IN', {
+          dateStyle: 'medium',
+          timeStyle: 'short'
+        });
+      }
+
+      if (wishlistedEvents.length === 0) {
+        wishlistGrid.innerHTML = '<div class="small" style="text-align:center; padding:20px;">Your wishlist is empty. Browse our events to find something you like!</div>';
+      } else {
+        wishlistedEvents.forEach(e => {
+          const paidLabel = e.price === 0 ? 'Free' : '₹' + e.price.toLocaleString('en-IN');
+          const onlineStatusBadge = `<span class="${e.isOnline ? 'online-badge' : 'offline-badge'}">${e.isOnline ? 'Online' : 'Offline'}</span>`;
+          const card = document.createElement('article');
+          card.className = 'event-card';
+          card.setAttribute('data-id', e.id);
+          card.innerHTML = `
+            <div>
+              <div class="meta">
+                <div class="type-badge">${e.type}</div>
+                <div class="price">${paidLabel}</div>
+              </div>
+              <div class="event-title">${e.title}</div>
+              <div class="event-details">
+                <div>${onlineStatusBadge}</div>
+                <div>${formatDate(e.date)}</div>
+                <div style="margin-top:6px">${e.city}</div>
+              </div>
+            </div>
+            <div style="margin-top:12px">
+                <button class="btn remove-btn" data-id="${e.id}">Remove from Wishlist</button>
+            </div>
+          `;
+          wishlistGrid.appendChild(card);
+        });
+      }
+
+      // Functionality to remove items from wishlist
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = parseInt(btn.dataset.id);
+          const wishlist = new Set(JSON.parse(localStorage.getItem('wishlist')) || []);
+          wishlist.delete(id);
+          localStorage.setItem('wishlist', JSON.stringify([...wishlist]));
+          btn.closest('.event-card').remove();
+          if (wishlistGrid.children.length === 0) {
+            wishlistGrid.innerHTML = '<div class="small" style="text-align:center; padding:20px;">Your wishlist is empty. Browse our events to find something you like!</div>';
+          }
+        });
+      });
+    });
+
+    // Check login status and update auth link
+    const authLink = document.getElementById('auth-link');
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser) {
+      const username = loggedInUser.split('@')[0];
+      authLink.innerText = username;
+      authLink.href = 'profile.html';
+    }
+  </script>
+</body>
+</html>

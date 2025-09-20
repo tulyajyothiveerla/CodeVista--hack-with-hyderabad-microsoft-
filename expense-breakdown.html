@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>InnoGrid — Expense Breakdown</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="logo" style="color: #6667ad;">INNOBUDGET</div>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="wishlist.html">Wishlist</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="#" class="active">CFO Helper</a>
+      </nav>
+      <div class="roles">
+        <a href="loginsignup.html" class="role-btn" id="auth-link">Login / Signup</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="inner">
+        <h1>EXPENSE BREAKDOWN</h1>
+        <p class="lead">Manage and analyze your company's expenses at a glance.</p>
+      </div>
+    </section>
+
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="summary-card">
+        <h3 class="text-2xl font-semibold mb-4">At-a-Glance Summary</h3>
+        <div class="space-y-4 text-lg">
+          <div class="flex justify-between items-center">
+            <p class="text-gray-500">Total Expenses</p>
+            <p id="total-expenses-display" class="font-bold text-2xl">₹375,000</p>
+          </div>
+          <div class="flex justify-between items-center">
+            <p class="text-gray-500">Budget</p>
+            <p id="budget-display" class="font-bold text-2xl">₹450,000</p>
+          </div>
+          <div class="flex justify-between items-center">
+            <p class="text-gray-500">Variance vs. Budget</p>
+            <p id="variance-display" class="font-bold text-2xl text-green-500">₹75,000 under budget</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pie-chart-card">
+        <h3 class="text-2xl font-semibold text-center mb-4">Breakdown by Category</h3>
+        <div id="pie-chart-container" class="pie-chart-container"></div>
+        <div id="chart-legend" class="chart-legend"></div>
+      </div>
+    </div>
+
+    <div class="inputs-card mt-8 w-full">
+      <h3 class="text-2xl font-semibold mb-6">Detailed Expense Inputs</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="flex flex-col space-y-2">
+          <p class="font-medium">Salaries & Wages (₹)</p>
+          <input type="number" id="salaries-input" value="150000" class="input-field" />
+        </div>
+        <div class="flex flex-col space-y-2">
+          <p class="font-medium">Rent & Utilities (₹)</p>
+          <input type="number" id="rent-input" value="50000" class="input-field" />
+        </div>
+        <div class="flex flex-col space-y-2">
+          <p class="font-medium">Marketing & Advertising (₹)</p>
+          <input type="number" id="marketing-input" value="80000" class="input-field" />
+        </div>
+        <div class="flex flex-col space-y-2">
+          <p class="font-medium">Travel & Entertainment (₹)</p>
+          <input type="number" id="travel-input" value="25000" class="input-field" />
+        </div>
+        <div class="flex flex-col space-y-2">
+          <p class="font-medium">Technology & Software (₹)</p>
+          <input type="number" id="tech-input" value="60000" class="input-field" />
+        </div>
+        <div class="flex flex-col space-y-2">
+          <p class="font-medium">Supplies & Miscellaneous (₹)</p>
+          <input type="number" id="supplies-input" value="30000" class="input-field" />
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 flex justify-center">
+      <button id="download-report-btn" class="download-btn">
+        Download Expense Report
+      </button>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const salariesInput = document.getElementById('salaries-input');
+      const rentInput = document.getElementById('rent-input');
+      const marketingInput = document.getElementById('marketing-input');
+      const travelInput = document.getElementById('travel-input');
+      const techInput = document.getElementById('tech-input');
+      const suppliesInput = document.getElementById('supplies-input');
+
+      const totalExpensesDisplay = document.getElementById('total-expenses-display');
+      const budgetDisplay = document.getElementById('budget-display');
+      const varianceDisplay = document.getElementById('variance-display');
+      const pieChartContainer = document.getElementById('pie-chart-container');
+      const chartLegend = document.getElementById('chart-legend');
+      const downloadBtn = document.getElementById('download-report-btn');
+
+      const budget = 450000;
+      const colors = ['#A78BFA','#E9D5FF','#C4B5FD','#8B5CF6','#6D28D9','#4C1D95'];
+      const expenseCategories = ['Salaries & Wages','Rent & Utilities','Marketing & Adv','Travel & Ent','Technology & SW','Supplies & Misc'];
+
+      function updateChartAndSummary() {
+        const salaries = parseFloat(salariesInput.value) || 0;
+        const rent = parseFloat(rentInput.value) || 0;
+        const marketing = parseFloat(marketingInput.value) || 0;
+        const travel = parseFloat(travelInput.value) || 0;
+        const tech = parseFloat(techInput.value) || 0;
+        const supplies = parseFloat(suppliesInput.value) || 0;
+
+        const expenses = [salaries,rent,marketing,travel,tech,supplies];
+        const totalExpenses = expenses.reduce((a,b) => a+b,0);
+        const variance = totalExpenses - budget;
+
+        totalExpensesDisplay.textContent = `₹${totalExpenses.toLocaleString('en-IN')}`;
+        varianceDisplay.textContent = variance >= 0 ? `₹${variance.toLocaleString('en-IN')} over budget` : `₹${Math.abs(variance).toLocaleString('en-IN')} under budget`;
+        varianceDisplay.className = `font-bold text-2xl ${variance >= 0 ? 'text-red-500' : 'text-green-500'}`;
+        budgetDisplay.textContent = `₹${budget.toLocaleString('en-IN')}`;
+
+        drawPieChart(expenses);
+        drawLegend(expenses);
+      }
+
+      function drawPieChart(expenses) {
+        const total = expenses.reduce((a,b) => a+b,0);
+        let startAngle = 0;
+        let svgPaths = '';
+        function coords(p){ return [Math.cos(2*Math.PI*p),Math.sin(2*Math.PI*p)]; }
+        expenses.forEach((amount,i)=>{
+          const percent = total===0?0:amount/total;
+          const [sx,sy] = coords(startAngle); startAngle+=percent; const [ex,ey] = coords(startAngle);
+          const largeArc = percent>0.5?1:0;
+          svgPaths += `<path d="M ${sx} ${sy} A 1 1 0 ${largeArc} 1 ${ex} ${ey} L 0 0" fill="${colors[i%colors.length]}" />`;
+        });
+        pieChartContainer.innerHTML = `<svg viewBox="-1 -1 2 2" class="w-48 h-48 mx-auto" style="transform: rotate(-90deg);">${svgPaths}</svg>`;
+      }
+
+      function drawLegend(expenses) {
+        chartLegend.innerHTML = expenses.map((amt,i)=> amt>0?`<div class="legend-item"><div class="legend-box" style="background-color:${colors[i%colors.length]};"></div><span>${expenseCategories[i]}</span></div>`:'').join('');
+      }
+
+      function handleDownloadReport() {
+        alert('Downloading Expense Report...');
+        console.log('Expense Report Data:', {
+          salaries: salariesInput.value,
+          rent: rentInput.value,
+          marketing: marketingInput.value,
+          travel: travelInput.value,
+          tech: techInput.value,
+          supplies: suppliesInput.value,
+          total: totalExpensesDisplay.textContent,
+        });
+      }
+
+      [salariesInput,rentInput,marketingInput,travelInput,techInput,suppliesInput].forEach(el=>el.addEventListener('input',updateChartAndSummary));
+      downloadBtn.addEventListener('click', handleDownloadReport);
+
+      updateChartAndSummary();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>InnoGrid — About</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: url(eventsbg.jpeg);
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="logo" style="color: #6667ad;">INNOBUDGET</div>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="wishlist.html">Wishlist</a>
+        <a href="about.html" class="active">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="profile.html">Profile</a>
+      </nav>
+
+      <div class="roles">
+        <a href="loginsignup.html" class="role-btn" id="auth-link">Login / Signup</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="inner">
+        <h1>Our Vision: A Connected Future</h1>
+        <p class="lead">At InnoGrid, we believe in the power of collaboration and innovation to solve tomorrow's challenges. We've built a platform to connect brilliant minds—from developers and entrepreneurs to artists and academics—and provide them with the tools they need to bring groundbreaking ideas to life.</p>
+        <p class="lead">Our mission is to foster a vibrant community where knowledge is shared, connections are forged, and opportunities are discovered. We strive to be the grid that powers your innovation, making it easier than ever to participate in, organize, and sponsor the events that shape our world.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Check login status and update auth link
+    const authLink = document.getElementById('auth-link');
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser) {
+        const username = loggedInUser.split('@')[0];
+        authLink.innerText = username;
+        authLink.href = 'profile.html';
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InnoGrid - Login / Signup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: url(loginsignupbg.jpeg);
+      background-position: center;
+      background-position: fixed;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="logo" style="color: #6667ad;">INNOBUDGET</div>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="wishlist.html">Wishlist</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="profile.html">Profile</a>
+      </nav>
+      <div class="roles">
+        <a href="loginsignup.html" class="role-btn" id="auth-link">Login / Signup</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="auth-wrapper">
+      <div class="auth-box">
+        <h2 id="form-title">Login</h2>
+        <form id="authForm">
+          <div id="role-select-container">
+            <select id="auth-role" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); font-size:0.95rem;">
+              <option value="participant">Participant</option>
+              <option value="organiser">Organiser</option>
+              <option value="sponsor">Sponsor</option>
+            </select>
+          </div>
+          <input type="email" id="email" placeholder="Email" required>
+          <input type="password" id="password" placeholder="Password" required>
+          <input type="password" id="confirm-password" placeholder="Confirm Password" style="display:none;">
+
+          <div id="code-input-group" class="role-input-group" style="display:none;">
+            <input type="text" id="code" placeholder="Registration Code">
+          </div>
+
+          <button type="submit">Login</button>
+        </form>
+        <div id="message" style="margin-top:12px;"></div>
+        <div class="switch-auth">
+          Don’t have an account? <a onclick="toggleAuth()">Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let isLogin = true;
+
+    function updateFields() {
+      const confirmPasswordInput = document.getElementById('confirm-password');
+      const codeInputGroup = document.getElementById('code-input-group');
+      const role = document.getElementById("auth-role").value;
+
+      confirmPasswordInput.style.display = isLogin ? 'none' : 'block';
+      if (isLogin && (role === 'organiser' || role === 'sponsor')) {
+        codeInputGroup.style.display = 'block';
+      } else {
+        codeInputGroup.style.display = 'none';
+      }
+    }
+
+    function toggleAuth() {
+      isLogin = !isLogin;
+      document.getElementById("form-title").innerText = isLogin ? "Login" : "Sign Up";
+      document.querySelector("#authForm button").innerText = isLogin ? "Login" : "Sign Up";
+      document.querySelector(".switch-auth").innerHTML = isLogin ?
+        `Don’t have an account? <a onclick="toggleAuth()">Sign Up</a>` :
+        `Already have an account? <a onclick="toggleAuth()">Login</a>`;
+      document.getElementById("message").innerText = "";
+      updateFields();
+    }
+
+    document.getElementById("auth-role").addEventListener('change', updateFields);
+
+    document.getElementById("authForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      let email = document.getElementById("email").value.trim();
+      let password = document.getElementById("password").value.trim();
+      let confirmPassword = document.getElementById("confirm-password").value.trim();
+      let msg = document.getElementById("message");
+      const role = document.getElementById("auth-role").value;
+      const button = document.querySelector("#authForm button");
+
+      button.disabled = true;
+      button.innerText = "Processing...";
+
+      const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+      if (!emailRegex.test(email)) {
+        msg.innerText = "Please enter a valid email address.";
+        msg.className = "error";
+        button.disabled = false;
+        button.innerText = isLogin ? "Login" : "Sign Up";
+        return;
+      }
+
+      if (!email || !password || (!isLogin && !confirmPassword)) {
+        msg.innerText = "Please fill in all fields.";
+        msg.className = "error";
+        button.disabled = false;
+        button.innerText = isLogin ? "Login" : "Sign Up";
+        return;
+      }
+
+      if (!isLogin) {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[^\s]{8,}$/;
+        if (!passwordRegex.test(password)) {
+          msg.innerText = "Password must be at least 8 characters, include uppercase, lowercase, number, and special character (no spaces).";
+          msg.className = "error";
+          button.disabled = false;
+          button.innerText = "Sign Up";
+          return;
+        }
+        if (password !== confirmPassword) {
+          msg.innerText = "Passwords do not match.";
+          msg.className = "error";
+          button.disabled = false;
+          button.innerText = "Sign Up";
+          return;
+        }
+      }
+
+      if (isLogin) {
+        let storedUser = JSON.parse(localStorage.getItem(email));
+        const code = document.getElementById('code').value.trim();
+
+        if (storedUser && storedUser.password === password && storedUser.role === role) {
+          if ((role === 'organiser' || role === 'sponsor') && storedUser.registrationCode !== code) {
+            msg.innerText = "Invalid registration code.";
+            msg.className = "error";
+          } else {
+            msg.innerText = "Login successful! Redirecting...";
+            msg.className = "success";
+            localStorage.setItem("loggedInUser", email);
+            localStorage.setItem("userRole", role); // ✅ Save role
+            setTimeout(() => window.location.href = "profile.html", 1200);
+          }
+        } else {
+          msg.innerText = "Invalid email, password, or role.";
+          msg.className = "error";
+        }
+        button.disabled = false;
+        button.innerText = "Login";
+
+      } else {
+        if (localStorage.getItem(email)) {
+          msg.innerText = "User already exists. Please login.";
+          msg.className = "error";
+          button.disabled = false;
+          button.innerText = "Sign Up";
+        } else {
+          const registrationCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+          localStorage.setItem(email, JSON.stringify({
+            email,
+            password,
+            role,
+            registrationCode
+          }));
+          msg.innerHTML = `Signup successful! <strong>Your code: ${registrationCode}</strong>. Keep it safe for future logins.`;
+          msg.className = "success";
+          alert(`Email Simulation: Your registration code is ${registrationCode}. Remember this for future logins.`);
+          localStorage.setItem("loggedInUser", email);
+          localStorage.setItem("userRole", role); // ✅ Save role
+          setTimeout(() => window.location.href = "profile.html", 1500);
+          button.disabled = false;
+          button.innerText = "Sign Up";
+        }
+      }
+    });
+
+    const authLink = document.getElementById('auth-link');
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser) {
+      const username = loggedInUser.split('@')[0];
+      authLink.innerText = username;
+      authLink.href = 'profile.html';
+    }
+    
+    updateFields();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>InnoGrid — Financial Summary</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: url(financialbg.jpeg);
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="logo" style="color: #6667ad;">INNOBUDGET</div>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="wishlist.html">Wishlist</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="#" class="active">CFO Helper</a>
+      </nav>
+      <div class="roles">
+        <a href="loginsignup.html" class="role-btn" id="auth-link">Login / Signup</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="inner">
+        <h1>FINANCIAL SUMMARY</h1>
+        <p class="lead">A quick snapshot of your company's financial health.</p>
+      </div>
+    </section>
+
+    <div class="financial-card mt-12 mx-auto w-full max-w-4xl">
+      <div class="flex flex-col md:flex-row items-center gap-8 md:gap-16">
+        <div class="w-full md:w-3/5 space-y-8">
+          <div>
+            <p class="text-gray-500">Total Revenue (₹)</p>
+            <input type="number" id="revenue-input" value="250000" class="input-field" />
+          </div>
+          <div>
+            <p class="text-gray-500">Total Expenses (₹)</p>
+            <input type="number" id="expenses-input" value="180000" class="input-field" />
+          </div>
+          <div>
+            <p class="text-gray-500">Net Profit (₹)</p>
+            <p id="net-profit" class="text-3xl font-bold text-purple-600">₹70,000</p>
+          </div>
+          <button id="generate-chart-btn" class="generate-btn">Generate Chart</button>
+        </div>
+        <div id="chart-and-legend-container" class="w-full md:w-2/5 flex flex-col items-center justify-center"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const revenueInput = document.getElementById('revenue-input');
+      const expensesInput = document.getElementById('expenses-input');
+      const netProfitDisplay = document.getElementById('net-profit');
+      const generateBtn = document.getElementById('generate-chart-btn');
+      const chartContainer = document.getElementById('chart-and-legend-container');
+
+      function updateNetProfit() {
+        const revenue = parseFloat(revenueInput.value) || 0;
+        const expenses = parseFloat(expensesInput.value) || 0;
+        const netProfit = revenue - expenses;
+        netProfitDisplay.textContent = `₹${netProfit.toLocaleString('en-IN')}`;
+      }
+
+      function coords(p){ return [Math.cos(2*Math.PI*p),Math.sin(2*Math.PI*p)]; }
+
+      function drawPieChart(revenue, expenses) {
+        const total = revenue+expenses;
+        if (total<=0){ chartContainer.innerHTML=`<svg class="w-40 h-40" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="transparent" stroke="#e5e7eb" stroke-width="15"/></svg>`; return; }
+        const revPerc = revenue/total;
+        const [sx,sy]=coords(0); const [ex,ey]=coords(revPerc);
+        const revArc=`M ${sx*40+50} ${sy*40+50} A 40 40 0 ${revPerc>0.5?1:0} 1 ${ex*40+50} ${ey*40+50} L 50 50`;
+        const [sx2,sy2]=coords(revPerc); const [ex2,ey2]=coords(1);
+        const expArc=`M ${sx2*40+50} ${sy2*40+50} A 40 40 0 ${(1-revPerc)>0.5?1:0} 1 ${ex2*40+50} ${ey2*40+50} L 50 50`;
+        chartContainer.innerHTML=`<svg class="w-40 h-40 transform -rotate-90" viewBox="0 0 100 100"><path d="${expArc}" fill="#E9D5FF"/><path d="${revArc}" fill="#6667AB"/></svg>
+        <div class="flex flex-col space-y-2 mt-6 text-left w-full items-center">
+          <div class="legend-item"><div class="legend-box" style="background-color:#6667AB;"></div><span>Revenue</span></div>
+          <div class="legend-item"><div class="legend-box" style="background-color:#E9D5FF;"></div><span>Expenses</span></div>
+        </div>`;
+      }
+
+      revenueInput.addEventListener('input', updateNetProfit);
+      expensesInput.addEventListener('input', updateNetProfit);
+      generateBtn.addEventListener('click', ()=> drawPieChart(parseFloat(revenueInput.value)||0,parseFloat(expensesInput.value)||0));
+
+      updateNetProfit();
+    });
+  </script>
+</body>
+</html>

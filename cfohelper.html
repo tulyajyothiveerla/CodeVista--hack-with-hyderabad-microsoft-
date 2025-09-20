@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>InnoGrid — CFO Helper</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: url(cfohelperbg.jpeg);
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="logo" style="color: #6667ad;">INNOBUDGET</div>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="wishlist.html">Wishlist</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="#" class="active">CFO Helper</a>
+      </nav>
+      <div class="roles">
+        <a href="loginsignup.html" class="role-btn" id="auth-link">Login / Signup</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="inner">
+        <h1>CFO Helper</h1>
+        <p class="lead">Auto-generate finance slides and reports. Choose a report below to preview or generate them all at once.</p>
+      </div>
+    </section>
+
+    <div class="report-container">
+      <section class="cfo-reports-section">
+        <h3 class="cfo-section-title">Standard Reports</h3>
+        <div class="cfo-grid" id="standard-grid">
+          <a href="financial-summary.html" class="cfo-report-card">
+            <div class="cfo-icon-wrap" aria-hidden="true">
+              <svg class="cfo-icon" viewBox="0 0 24 24"><path d="M3 3h18v2H3zM3 7h6v14H3zM10 7h11v14H10z"/></svg>
+            </div>
+            <div>
+              <div class="cfo-card-title">Financial Summary</div>
+              <div class="cfo-card-sub">Quick snapshot of health</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="cfo-reports-section">
+        <h3 class="cfo-section-title">Custom Reports</h3>
+        <div class="cfo-grid" id="custom-grid">
+          <a href="expense-breakdown.html" class="cfo-report-card">
+            <div class="cfo-icon-wrap" aria-hidden="true">
+              <svg class="cfo-icon" viewBox="0 0 24 24"><path d="M3 13h18v2H3zM3 5h18v2H3zM3 9h12v2H3zM3 17h8v2H3z"/></svg>
+            </div>
+            <div>
+              <div class="cfo-card-title">Expense Breakdown</div>
+              <div class="cfo-card-sub">Category-level spend split</div>
+            </div>
+          </a>
+          <a href="what-if.html" class="cfo-report-card">
+            <div class="cfo-icon-wrap" aria-hidden="true">
+              <svg class="cfo-icon" viewBox="0 0 24 24"><path d="M3 13h2v7H3zM7 9h2v11H7zM11 5h2v15h-2zM15 3h2v17h-2z"/></svg>
+            </div>
+            <div>
+              <div class="cfo-card-title">What If Analysis</div>
+              <div class="cfo-card-sub">Simulate scenarios & impacts</div>
+            </div>
+          </a>
+        </div>
+      </section>
+    </div>
+    <div class="cfo-bottom-row">
+      <button id="generate-all" class="btn btn-primary">Generate All</button>
+      <button id="refresh" class="btn btn-secondary">Refresh</button>
+      <div class="usage" id="usage">You have generated <strong id="usage-count">0</strong>/10 reports this month</div>
+    </div>
+  </main>
+
+  <script>
+    const cards = document.querySelectorAll('.cfo-report-card');
+    const usageCountEl = document.getElementById('usage-count');
+    let usage = 0;
+
+    document.getElementById('generate-all').addEventListener('click', () => {
+      const selectedCards = document.querySelectorAll('.cfo-report-card.selected');
+      const count = selectedCards.length ? selectedCards.length : document.querySelectorAll('.cfo-report-card').length;
+      usage += count;
+      if (usage > 10) usage = 10;
+      if (usageCountEl) usageCountEl.textContent = usage;
+      selectedCards.forEach(c => {
+        c.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.02)' }, { transform: 'scale(1)' }], { duration: 400 });
+      });
+    });
+
+    document.getElementById('refresh').addEventListener('click', () => {
+      document.querySelectorAll('.cfo-report-card').forEach(c => {
+        c.animate([{ background: '#fff' }, { background: '#f5f0ff' }, { background: '#fff' }], { duration: 450 });
+      });
+    });
+
+    document.getElementById('generate-all').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') e.target.click();
+    });
+
+    // ✅ Remove restrictions: anyone can use CFO Helper
+    const authLink = document.getElementById('auth-link');
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser) {
+      const username = loggedInUser.split('@')[0];
+      authLink.innerText = username;
+      authLink.href = 'profile.html';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>InnoGrid — Register</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: url(registerbg.jpeg);
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="logo" style="color: #6667ad;">INNOBUDGET</div>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="wishlist.html">Wishlist</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="profile.html">Profile</a>
+      </nav>
+      <div class="roles">
+        <a href="loginsignup.html" class="role-btn" id="auth-link">Login / Signup</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="register-wrapper">
+      <div class="register-form">
+        <h2 id="register-title">Register for the Event</h2>
+        <form id="registrationForm">
+
+          <div class="form-group">
+            <label for="role">I am a</label>
+            <select id="role" name="role" required>
+              <option value="">-- Select your role --</option>
+              <option value="participant">Participant</option>
+              <option value="organiser">Organiser</option>
+              <option value="sponsor">Sponsor</option>
+            </select>
+          </div>
+
+          <div id="participant-fields" style="display: none;">
+            <div class="form-group">
+              <label for="p-name">Full Name</label>
+              <input type="text" id="p-name" name="p-name">
+            </div>
+            <div class="form-group">
+              <label for="p-phone">Phone Number</label>
+              <input type="tel" id="p-phone" name="p-phone">
+            </div>
+            <div class="form-group">
+              <label for="p-email">Email Address</label>
+              <input type="email" id="p-email" name="p-email">
+            </div>
+            <div class="form-group">
+              <label for="p-college">College / Company</label>
+              <input type="text" id="p-college" name="p-college">
+            </div>
+            <div class="form-group">
+              <label for="p-year">Year of Study / Designation</label>
+              <input type="text" id="p-year" name="p-year">
+            </div>
+          </div>
+
+          <div id="organiser-fields" style="display: none;">
+            <div class="form-group">
+              <label for="o-name">Organiser Name</label>
+              <input type="text" id="o-name" name="o-name">
+            </div>
+            <div class="form-group">
+              <label for="o-org">Organisation / Company Name</label>
+              <input type="text" id="o-org" name="o-org">
+            </div>
+            <div class="form-group">
+              <label for="o-email">Email Address</label>
+              <input type="email" id="o-email" name="o-email">
+            </div>
+            <div class="form-group">
+              <label for="o-desc">Event Description</label>
+              <textarea id="o-desc" name="o-desc"></textarea>
+            </div>
+          </div>
+
+          <div id="sponsor-fields" style="display: none;">
+            <div class="form-group">
+              <label for="s-name">Sponsor Name</label>
+              <input type="text" id="s-name" name="s-name">
+            </div>
+            <div class="form-group">
+              <label for="s-company">Company Name</label>
+              <input type="text" id="s-company" name="s-company">
+            </div>
+            <div class="form-group">
+              <label for="s-email">Email Address</label>
+              <input type="email" id="s-email" name="s-email">
+            </div>
+            <div class="form-group">
+              <label for="s-investment">Investment Amount (INR)</label>
+              <input type="number" id="s-investment" name="s-investment">
+            </div>
+          </div>
+
+          <div id="payment-section" style="display:none;">
+            <h3 style="margin-top:24px; margin-bottom:12px; font-weight:600;">Payment Details</h3>
+            <div class="form-group payment-options">
+              <div class="payment-option">
+                <label>
+                  <input type="radio" name="payment-method" value="pay-on-spot" required> Pay On Spot
+                </label>
+                <div class="payment-option-details" style="display:none;">
+                  <p class="small" id="prepayment-message"></p>
+                </div>
+              </div>
+              <div class="payment-option">
+                <label>
+                  <input type="radio" name="payment-method" value="upi"> UPI
+                </label>
+                <div class="payment-option-details" style="display:none;">
+                  <input type="text" id="upi-id" placeholder="Your UPI ID" name="upi-id">
+                </div>
+              </div>
+              <div class="payment-option">
+                <label>
+                  <input type="radio" name="payment-method" value="card"> Card
+                </label>
+                <div class="payment-option-details" style="display:none;">
+                  <input type="text" id="card-number" placeholder="Card Number" name="card-number">
+                  <div style="display:flex; gap:10px;">
+                    <input type="text" id="card-expiry" placeholder="MM/YY" name="card-expiry" style="width:50%;">
+                    <input type="text" id="card-cvv" placeholder="CVV" name="card-cvv" style="width:50%;">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit">Submit Registration</button>
+        </form>
+        <div id="form-message" class="form-message" style="display: none;"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="container small" style="padding:24px 0;">
+    © 2025 InnoGrid
+  </footer>
+
+  <script src="events_data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('registrationForm');
+      const roleSelect = document.getElementById('role');
+      const participantFields = document.getElementById('participant-fields');
+      const organiserFields = document.getElementById('organiser-fields');
+      const sponsorFields = document.getElementById('sponsor-fields');
+      const paymentSection = document.getElementById('payment-section');
+      const paymentOptions = document.querySelectorAll('input[name="payment-method"]');
+      const prepaymentMessage = document.getElementById('prepayment-message');
+      const formMessage = document.getElementById('form-message');
+      const registerTitle = document.getElementById('register-title');
+      const urlParams = new URLSearchParams(window.location.search);
+      const eventId = urlParams.get('id');
+      const eventPrice = parseFloat(urlParams.get('price')) || 0;
+
+      if (eventId) {
+        const event = EVENTS.find(e => e.id == eventId);
+        if (event) {
+          registerTitle.innerText = `Register for ${event.title}`;
+        }
+      }
+
+      if (eventPrice > 0) {
+        paymentSection.style.display = 'block';
+        const prepaymentAmount = (eventPrice * 0.1).toFixed(2);
+        prepaymentMessage.innerText = `A 10% prepayment of ₹${prepaymentAmount} is required to secure your spot.`;
+      } else {
+        paymentSection.style.display = 'none';
+      }
+
+      roleSelect.addEventListener('change', () => {
+        const selectedRole = roleSelect.value;
+        participantFields.style.display = 'none';
+        organiserFields.style.display = 'none';
+        sponsorFields.style.display = 'none';
+
+        // Reset all fields and required attributes
+        document.querySelectorAll('#registrationForm input, #registrationForm textarea').forEach(el => {
+          el.removeAttribute('required');
+          el.value = '';
+        });
+
+        switch (selectedRole) {
+          case 'participant':
+            participantFields.style.display = 'block';
+            document.querySelectorAll('#participant-fields input').forEach(el => el.setAttribute('required', ''));
+            break;
+          case 'organiser':
+            organiserFields.style.display = 'block';
+            document.querySelectorAll('#organiser-fields input, #organiser-fields textarea').forEach(el => el.setAttribute('required', ''));
+            break;
+          case 'sponsor':
+            sponsorFields.style.display = 'block';
+            document.querySelectorAll('#sponsor-fields input').forEach(el => el.setAttribute('required', ''));
+            break;
+        }
+      });
+
+      paymentOptions.forEach(option => {
+        option.addEventListener('change', () => {
+          document.querySelectorAll('.payment-option-details').forEach(details => {
+            details.style.display = 'none';
+          });
+          const selectedOptionDetails = option.closest('.payment-option').querySelector('.payment-option-details');
+          if (selectedOptionDetails) {
+            selectedOptionDetails.style.display = 'block';
+          }
+          document.querySelectorAll('#payment-section [required]').forEach(el => el.removeAttribute('required'));
+          if (option.value === 'upi') {
+            document.getElementById('upi-id').setAttribute('required', '');
+          } else if (option.value === 'card') {
+            document.getElementById('card-number').setAttribute('required', '');
+            document.getElementById('card-expiry').setAttribute('required', '');
+            document.getElementById('card-cvv').setAttribute('required', '');
+          }
+        });
+      });
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const selectedRole = roleSelect.value;
+        const loggedInUserEmail = localStorage.getItem('loggedInUser');
+        let isValid = true;
+
+        if (!loggedInUserEmail) {
+          formMessage.innerText = 'Please log in or sign up to register.';
+          formMessage.className = 'form-message error';
+          formMessage.style.display = 'block';
+          return;
+        }
+
+        if (selectedRole === '') {
+          formMessage.innerText = 'Please select your role.';
+          formMessage.className = 'form-message error';
+          formMessage.style.display = 'block';
+          isValid = false;
+        } else {
+          const currentFields = document.querySelector(`#${selectedRole}-fields`);
+          if (currentFields) {
+            currentFields.querySelectorAll('input, textarea').forEach(input => {
+              if (input.hasAttribute('required') && input.value.trim() === '') {
+                isValid = false;
+              }
+            });
+          }
+        }
+
+        if (eventPrice > 0) {
+          const selectedPaymentMethod = document.querySelector('input[name="payment-method"]:checked');
+          if (!selectedPaymentMethod) {
+            formMessage.innerText = 'Please select a payment method.';
+            formMessage.className = 'form-message error';
+            formMessage.style.display = 'block';
+            return;
+          }
+          if (selectedPaymentMethod.value === 'upi' && document.getElementById('upi-id').value.trim() === '') {
+            formMessage.innerText = 'Please enter your UPI ID.';
+            formMessage.className = 'form-message error';
+            formMessage.style.display = 'block';
+            isValid = false;
+          }
+          if (selectedPaymentMethod.value === 'card') {
+            const cardNumber = document.getElementById('card-number').value.trim();
+            const cardExpiry = document.getElementById('card-expiry').value.trim();
+            const cardCvv = document.getElementById('card-cvv').value.trim();
+            if (cardNumber === '' || cardExpiry === '' || cardCvv === '') {
+              formMessage.innerText = 'Please fill in all card details.';
+              formMessage.className = 'form-message error';
+              formMessage.style.display = 'block';
+              isValid = false;
+            }
+          }
+        }
+
+        if (isValid) {
+          const formData = {
+            eventId: eventId,
+            email: loggedInUserEmail,
+            role: selectedRole,
+            details: {}
+          };
+
+          const inputs = document.querySelectorAll(`#${selectedRole}-fields input, #${selectedRole}-fields textarea`);
+          inputs.forEach(input => {
+            formData.details[input.name] = input.value;
+          });
+
+          // Save registration to localStorage
+          let registeredEvents = JSON.parse(localStorage.getItem('registeredEvents')) || [];
+          registeredEvents.push(formData);
+          localStorage.setItem('registeredEvents', JSON.stringify(registeredEvents));
+
+          console.log('Form Data:', formData);
+
+          formMessage.innerText = 'Thank you for your interest! We have received your registration and will be in touch shortly.';
+          formMessage.className = 'form-message success';
+          formMessage.style.display = 'block';
+          form.reset();
+          roleSelect.value = '';
+          roleSelect.dispatchEvent(new Event('change'));
+        } else {
+          formMessage.innerText = 'Please fill out all required fields.';
+          formMessage.className = 'form-message error';
+          formMessage.style.display = 'block';
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>InnoGrid — What If Analysis</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="logo" style="color: #6667ad;">INNOBUDGET</div>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="wishlist.html">Wishlist</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="cfohelper.html" class="active">CFO Helper</a>
+      </nav>
+      <div class="roles">
+        <a href="loginsignup.html" class="role-btn" id="auth-link">Login / Signup</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="inner">
+        <h1>WHAT IF ANALYSIS</h1>
+        <p class="lead">Enter your custom values below to test budget outcomes.</p>
+      </div>
+    </section>
+
+    <div class="analysis-card mt-12 mx-auto w-full max-w-3xl">
+      <div class="space-y-6">
+        <div>
+          <p class="text-gray-500">Revenue (₹)</p>
+          <input type="number" id="whatif-revenue" value="200000" class="input-field" />
+        </div>
+        <div>
+          <p class="text-gray-500">Expenses (₹)</p>
+          <input type="number" id="whatif-expenses" value="150000" class="input-field" />
+        </div>
+        <div>
+          <p class="text-gray-500">Scenario Result (₹)</p>
+          <p id="whatif-result" class="text-3xl font-bold text-purple-600">₹50,000</p>
+        </div>
+        <button id="simulate-btn" class="simulate-btn">Simulate Scenario</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const revenueInput = document.getElementById('whatif-revenue');
+      const expensesInput = document.getElementById('whatif-expenses');
+      const resultDisplay = document.getElementById('whatif-result');
+      const simulateBtn = document.getElementById('simulate-btn');
+
+      function updateResult() {
+        const revenue = parseFloat(revenueInput.value) || 0;
+        const expenses = parseFloat(expensesInput.value) || 0;
+        resultDisplay.textContent = `₹${(revenue-expenses).toLocaleString('en-IN')}`;
+      }
+
+      revenueInput.addEventListener('input', updateResult);
+      expensesInput.addEventListener('input', updateResult);
+      simulateBtn.addEventListener('click', updateResult);
+
+      updateResult();
+    });
+  </script>
+</body>
+</html>

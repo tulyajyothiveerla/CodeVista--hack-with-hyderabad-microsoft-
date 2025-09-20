@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>InnoGrid — Home</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: url(homebg.png);
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    .cfo-helper-section {
+      text-align: center;
+      margin-top: 50px;
+    }
+    .cfo-helper-button {
+      display: inline-block;
+      padding: 20px 40px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #6667ad;
+      border: none;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+    }
+    .cfo-helper-button:hover {
+      background-color: #555699;
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="logo" style="color: #6667ad;">INNOBUDGET</div>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html" class="active">Home</a>
+        <a href="events.html">Events</a>
+        <a href="wishlist.html">Wishlist</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="profile.html">Profile</a>
+      </nav>
+      <div class="roles">
+        <a href="loginsignup.html" class="role-btn" id="auth-link">Login / Signup</a>
+      </div>
+    </div>
+  </header>
+  <main class="container">
+    <section class="hero">
+      <div class="inner">
+        <h1>Innovate and manage your finances with our intuitive CFO helper</h1>
+        <p class="lead">Turn complex finances into simple, clear insights with interactive forecasts, expense breakdowns, and live updates.”</p>
+        <div class="actions-cta">
+          <a href="events.html" class="btn btn-primary">Explore Events</a>
+          <a href="about.html" class="btn btn-secondary">Learn More</a>
+        </div>
+      </div>
+    </section>
+    <section class="cfo-helper-section">
+      <a href="cfohelper.html" class="cfo-helper-button">CFO Helper</a>
+    </section>
+  </main>
+  <script>
+    const authLink = document.getElementById('auth-link');
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser) {
+      const username = loggedInUser.split('@')[0];
+      authLink.innerText = username;
+      authLink.href = 'profile.html';
+    }
+  </script>
+</body>
+</html>
